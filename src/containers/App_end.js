@@ -51,7 +51,7 @@ function App() {
         setUtente(utente);
       }
       setLoading(false);
-    }
+    };
     onUtenteLoggato(utenteLoggatoCallback);
   }, []);
 

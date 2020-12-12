@@ -5,14 +5,75 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Menu from '../components/Menu';
 import styled from 'styled-components';
 
+import firebase from 'firebase';
+import firebaseConfig from '../firebase-config';
+
+
+firebase.initializeApp(firebaseConfig);
+
+function onUtenteLoggato(utenteLoggatoCallback) {
+  // Quando l'utente è loggato o si è sloggato noi eseguiamo il codice interno all metodo onAuthStateChanged
+  return firebase.auth().onAuthStateChanged((utenteParametro) => {
+    if (utenteParametro) {
+      console.log('utentePrametro: ', utenteParametro);
+      utenteLoggatoCallback({
+        loggato: true,
+        nome: utenteParametro.displayName,
+        email: utenteParametro.email,
+        uid: utenteParametro.uid,
+      });
+    } else {
+      utenteLoggatoCallback({
+        loggato: false,
+      });
+    }
+  });
+};
+
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+const loggatiConGoogle = () => {
+  auth.signInWithPopup(provider);
+};
+const logout = () => {
+  firebase.auth().signOut();
+};
+
 function App() {
   // stato che utilizzeremo per aprire e chiudere il nostro menu laterale. Il menu può solo essere aperto o chiudo, perciò utilizzo un booleano (true/aperto, false/chiuso)
   const [menuVisibile, setMenuVisibile] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [utente, setUtente] = useState({loggato: false});
 
+  //Questo useEffect scatenerà la funzione che gli è passata solo all'avvio dell'APP
   useEffect(() => {
-    setLoading(false);
+    // funzione che ci permette di invocare i cambi di stato anche al di fuori del nostro componente!
+    function utenteLoggatoCallback(utenteObj) {
+      setUtente(utenteObj);
+      setLoading(false);
+    };
+    // funzione che intercetta l'avvenuto cambio di stato della login
+    onUtenteLoggato(utenteLoggatoCallback);
   }, []);
+
+  // Questo useEffect scatenerà la funzione che gli è passata solo quando lo stato utente cambierà di valore!
+  useEffect(() => {
+    if (utente.uid) {
+      const utenteReferenza = firebase.database().ref('/utenti/' + utente.uid);
+      utenteReferenza.once("value", (utenteDb) => {
+        const cloneUtenteDb = utenteDb.val();
+        if (cloneUtenteDb) {
+          return null;
+        } else {
+          utenteReferenza.set({
+            email: utente.email,
+            nome: utente.nome
+          });
+        }
+      });
+    }
+  }, [utente]);
 
   const apriChiudiMenu = () => {
     // con il punto esclamativo prima di una variabile andiamo a selezionare il valore opposto di un booleano 
@@ -34,7 +95,13 @@ function App() {
       <header className="app-header">
         {/* questo bottone determina l'apertura o la chiusura del menu*/}
         <MenuIcon onClick={() => apriChiudiMenu()} />
-        <Menu menuVisibile={menuVisibile} apriChiudiMenu={apriChiudiMenu} />
+        <Menu
+          menuVisibile={menuVisibile}
+          apriChiudiMenu={apriChiudiMenu}
+          utente={utente}
+          loggatiConGoogle={loggatiConGoogle}
+          logout={logout}
+        />
       </header>
     </Contenitore>
   );

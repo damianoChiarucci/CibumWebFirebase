@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import MenuIcon from '@material-ui/icons/Menu';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Menu from '../components/Menu';
+import Home from './Home';
 import styled from 'styled-components';
 
 import firebase from 'firebase';
@@ -103,6 +104,9 @@ function App() {
           logout={logout}
         />
       </header>
+      <div className="app-corpo">
+        <Home />
+      </div>
     </Contenitore>
   );
 }

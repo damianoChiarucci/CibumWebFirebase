@@ -3,14 +3,11 @@ import styled from 'styled-components';
 
 import MiniaturaRicetta from '../components/MiniaturaRicetta';
 
-const Home = () => {
+const Ricette = () => {
 
   return (
     <Contenitore>
-      <MiniaturaRicetta />
-      <MiniaturaRicetta />
-      <MiniaturaRicetta />
-      <MiniaturaRicetta />
+      RICETTE
     </Contenitore>
   );
 };
@@ -22,4 +19,4 @@ const Contenitore = styled.div`
   justify-content: center;
 `;
 
-export default Home;
+export default Ricette;

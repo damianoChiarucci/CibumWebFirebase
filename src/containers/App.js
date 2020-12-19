@@ -4,9 +4,19 @@ import MenuIcon from '@material-ui/icons/Menu';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Menu from '../components/Menu';
 import Home from './Home';
+import ListaSpesa from './ListaSpesa';
+import Ricette from './Ricette';
+
 import styled from 'styled-components';
 
 import firebase from 'firebase';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
+import { ROTTE } from '../costanti';
+
 import firebaseConfig from '../firebase-config';
 
 
@@ -91,23 +101,37 @@ function App() {
     );
   }
   return (
-    
-    <Contenitore className="App">
-      <header className="app-header">
-        {/* questo bottone determina l'apertura o la chiusura del menu*/}
-        <MenuIcon onClick={() => apriChiudiMenu()} />
-        <Menu
-          menuVisibile={menuVisibile}
-          apriChiudiMenu={apriChiudiMenu}
-          utente={utente}
-          loggatiConGoogle={loggatiConGoogle}
-          logout={logout}
-        />
-      </header>
-      <div className="app-corpo">
-        <Home />
-      </div>
-    </Contenitore>
+    <Router>
+      <Contenitore className="App">
+        <header className="app-header">
+          {/* questo bottone determina l'apertura o la chiusura del menu*/}
+          <MenuIcon onClick={() => apriChiudiMenu()} />
+          <Menu
+            menuVisibile={menuVisibile}
+            apriChiudiMenu={apriChiudiMenu}
+            utente={utente}
+            loggatiConGoogle={loggatiConGoogle}
+            logout={logout}
+          />
+        </header>
+        <div className="app-corpo">
+          <Switch>
+            <Route path={ROTTE.RICETTE}>
+              <Ricette />
+            </Route>
+
+            <Route path={ROTTE.LISTA_DELLA_SPESA}>
+              <ListaSpesa />
+            </Route>
+
+            <Route path={ROTTE.HOME}>
+              <Home />
+            </Route>
+
+          </Switch>
+        </div>
+      </Contenitore>
+    </Router>
   );
 }
 

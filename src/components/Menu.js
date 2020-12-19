@@ -1,5 +1,11 @@
 import { useState } from "react";
 
+import {
+  useHistory,
+  useLocation,
+} from "react-router-dom";
+import { ROTTE } from '../costanti';
+
 // importiamo gli elementi di material ui che ci occorrono : il menu vero e proprio e gli elementi list, list item e list text per stilizzare i bottoni che avremo nel menu
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
@@ -10,6 +16,13 @@ import Button from '@material-ui/core/Button';
 import styled from "styled-components";
 
 const Menu = (props) => {
+  const rottaCorrente = useLocation();
+  const listaRottePrecedenti = useHistory();
+
+  const cambiaRotta = (nuovaRotta) => {
+    listaRottePrecedenti.push(nuovaRotta);
+  };
+
   return (
     <>
       {/* 
@@ -31,13 +44,13 @@ const Menu = (props) => {
               <ListItemText primary={"Ciao " + props.utente.nome} />
             </ListItem>
           )}
-          <ListItem button key="Home">
+          <ListItem button key="Home" onClick={() => cambiaRotta(ROTTE.HOME)}>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button key="Ricette">
+          <ListItem button key="Ricette" onClick={() => cambiaRotta(ROTTE.RICETTE)}>
             <ListItemText primary="Ricette" />
           </ListItem>
-          <ListItem button key="Lista della Spesa">
+          <ListItem button key="Lista della Spesa" onClick={() => cambiaRotta(ROTTE.LISTA_DELLA_SPESA)}>
             <ListItemText primary="Lista della Spesa" />
           </ListItem>
         </List>

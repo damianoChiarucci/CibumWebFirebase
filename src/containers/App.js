@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 
 import MenuIcon from '@material-ui/icons/Menu';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -51,6 +51,8 @@ const logout = () => {
   firebase.auth().signOut();
 };
 
+export const RicetteContext = createContext();
+
 function App() {
   // stato che utilizzeremo per aprire e chiudere il nostro menu laterale. Il menu può solo essere aperto o chiudo, perciò utilizzo un booleano (true/aperto, false/chiuso)
   const [menuVisibile, setMenuVisibile] = useState(false);
@@ -101,37 +103,40 @@ function App() {
     );
   }
   return (
-    <Router>
-      <Contenitore className="App">
-        <header className="app-header">
-          {/* questo bottone determina l'apertura o la chiusura del menu*/}
-          <MenuIcon onClick={() => apriChiudiMenu()} />
-          <Menu
-            menuVisibile={menuVisibile}
-            apriChiudiMenu={apriChiudiMenu}
-            utente={utente}
-            loggatiConGoogle={loggatiConGoogle}
-            logout={logout}
-          />
-        </header>
-        <div className="app-corpo">
-          <Switch>
-            <Route path={ROTTE.RICETTE}>
-              <Ricette />
-            </Route>
+    <RicetteContext.Provider value={"Sono l'info che cercavi"}>
+      <Router>
+        <Contenitore className="App">
+          <header className="app-header">
+            {/* questo bottone determina l'apertura o la chiusura del menu*/}
+            <MenuIcon onClick={() => apriChiudiMenu()} />
+            <Menu
+              menuVisibile={menuVisibile}
+              apriChiudiMenu={apriChiudiMenu}
+              utente={utente}
+              loggatiConGoogle={loggatiConGoogle}
+              logout={logout}
+            />
+          </header>
+          <div className="app-corpo">
+            <Switch>
 
-            <Route path={ROTTE.LISTA_DELLA_SPESA}>
-              <ListaSpesa />
-            </Route>
+              <Route path={ROTTE.RICETTE}>
+                <Ricette />
+              </Route>
 
-            <Route path={ROTTE.HOME}>
-              <Home />
-            </Route>
+              <Route path={ROTTE.LISTA_DELLA_SPESA}>
+                <ListaSpesa />
+              </Route>
 
-          </Switch>
-        </div>
-      </Contenitore>
-    </Router>
+              <Route path={ROTTE.HOME}>
+                <Home />
+              </Route>
+
+            </Switch>
+          </div>
+        </Contenitore>
+      </Router>
+    </RicetteContext.Provider>
   );
 }
 

@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from 'styled-components';
 
+import { RicetteContext } from './App';
 import MiniaturaRicetta from '../components/MiniaturaRicetta';
 
-const Home = () => {
-
+const Home = (props) => {
+  const ricette = useContext(RicetteContext);
+  console.log(ricette);
   return (
     <Contenitore>
       <MiniaturaRicetta />

@@ -5,6 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Menu from '../components/Menu';
 import Home from './Home';
 import ListaSpesa from './ListaSpesa';
+import DettaglioRicetta from './DettaglioRicetta';
 import Ricette from './Ricette';
 
 import styled from 'styled-components';
@@ -58,6 +59,8 @@ function App() {
   const [menuVisibile, setMenuVisibile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [utente, setUtente] = useState({loggato: false});
+  const [chiaviRicette, setChiaviRicette] = useState([]);
+  const [oggettoRicette, setOggettoRicette] = useState({});
 
   //Questo useEffect scatenerà la funzione che gli è passata solo all'avvio dell'APP
   useEffect(() => {
@@ -68,6 +71,14 @@ function App() {
     };
     // funzione che intercetta l'avvenuto cambio di stato della login
     onUtenteLoggato(utenteLoggatoCallback);
+
+    const ricetteReferenza = firebase.database().ref('/ricette');
+    ricetteReferenza.on("value", (ricetteDb) => {
+      const ricetteObj = ricetteDb.val();
+      const ricetteArray = Object.keys(ricetteObj);
+      setOggettoRicette(ricetteObj);
+      setChiaviRicette(ricetteArray);
+    });
   }, []);
 
   // Questo useEffect scatenerà la funzione che gli è passata solo quando lo stato utente cambierà di valore!
@@ -103,7 +114,10 @@ function App() {
     );
   }
   return (
-    <RicetteContext.Provider value={"Sono l'info che cercavi"}>
+    <RicetteContext.Provider value={{
+      oggettoRicette,
+      chiaviRicette
+    }}>
       <Router>
         <Contenitore className="App">
           <header className="app-header">
@@ -126,6 +140,10 @@ function App() {
 
               <Route path={ROTTE.LISTA_DELLA_SPESA}>
                 <ListaSpesa />
+              </Route>
+
+              <Route path={ROTTE.DETTAGLIO_RICETTA + '/:chiave'}>
+                <DettaglioRicetta />
               </Route>
 
               <Route path={ROTTE.HOME}>

@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import styled from 'styled-components';
 
 import { useParams } from "react-router-dom";
+
+import moment from "moment";
 import { RicetteContext } from './App';
 import { breakpoints, colors } from '../global-styles';
 
@@ -12,6 +14,8 @@ export default function DettaglioRicetta (props) {
   console.log(ricetta);
   return (
     <Contenitore imgUrl={ricetta?.image?.url}>
+
+
       <div className="header-container">
         <div className="header-wrapper">
 
@@ -19,6 +23,36 @@ export default function DettaglioRicetta (props) {
           <div className="header-description-wrapper">
             <span className="header-description" dangerouslySetInnerHTML={{__html: ricetta?.description}}></span>
           </div>
+        </div>
+      </div>
+
+
+      <div className="main-container">
+        <div className="ingredients-container">
+          {
+            ricetta?.recipeIngredient.map((ingrediente, indice) => (
+              <div key={indice}>
+                <span>{ingrediente}</span>
+              </div>
+            ))
+          }
+        </div>
+        <div className="info-container">
+          
+          {ricetta?.prepTime && (
+            <div>
+              <span>{moment.duration(ricetta.prepTime).asMinutes()} Min</span>
+            </div>
+          )}
+
+          {ricetta?.recipeYield && (
+            <div>
+              <span>{ricetta.recipeYield} Persone</span>
+            </div>
+          )}
+
+
+
         </div>
       </div>
     </Contenitore>
@@ -75,6 +109,27 @@ const Contenitore = styled.div`
           color: #888;
         }
       }
+    }
+  }
+
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 90px;
+    .ingredients-container {
+      display: block;
+      padding: 30px 0px;
+      margin: 0px;
+      width: 50%;
+    }
+
+    .info-container {
+      display: block;
+      text-align: left;
+      width: 50%;
+      padding: 30px;
     }
   }
 `;

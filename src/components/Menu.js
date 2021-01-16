@@ -50,6 +50,9 @@ const Menu = (props) => {
           <ListItem button key="Ricette" onClick={() => cambiaRotta(ROTTE.RICETTE)}>
             <ListItemText primary="Ricette" />
           </ListItem>
+          <ListItem button key="Preferiti" onClick={() => cambiaRotta(ROTTE.PREFERITI)}>
+            <ListItemText primary="Preferiti" />
+          </ListItem>
           <ListItem button key="Lista della Spesa" onClick={() => cambiaRotta(ROTTE.LISTA_DELLA_SPESA)}>
             <ListItemText primary="Lista della Spesa" />
           </ListItem>

@@ -20,6 +20,14 @@ const GlobalStyles = createGlobalStyle`
  .bgOrange {
     background-color: orange !important;
  }
+ .MuiList-padding {
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+      .share-btn {
+         margin-right: 4px;
+         margin-left: 4px;
+      }
+   }
 `;
 
 export default GlobalStyles;

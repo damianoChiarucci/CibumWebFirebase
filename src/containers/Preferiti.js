@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import styled from 'styled-components';
 
+import { Redirect } from 'react-router-dom';
 import { RicetteContext, UtenteContext } from './App';
 import MiniaturaRicetta from '../components/MiniaturaRicetta';
+import { ROTTE } from "../costanti";
 
 const Preferiti = (props) => {
   const ricetteContesto = useContext(RicetteContext);
@@ -12,6 +14,12 @@ const Preferiti = (props) => {
   const ricettePreferite = ricetteContesto?.chiaviRicette.filter((chiave) => {
     return utenteContesto.isPreferito(chiave);
   });
+
+  if (!utenteContesto.utente?.loggato) {
+    return (
+      <Redirect to={ROTTE.LOGIN}/>
+    )
+  }
   return (
     <Contenitore>
       {ricettePreferite && ricettePreferite.map((chiave) => (

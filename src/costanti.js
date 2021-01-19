@@ -4,4 +4,5 @@ export const ROTTE = {
   LISTA_DELLA_SPESA: '/lista-della-spesa',
   DETTAGLIO_RICETTA: '/dettaglio-ricetta',
   PREFERITI: '/preferiti',
+  LOGIN: '/login',
 };

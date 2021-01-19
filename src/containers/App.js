@@ -8,6 +8,7 @@ import ListaSpesa from "./ListaSpesa";
 import DettaglioRicetta from "./DettaglioRicetta";
 import Preferiti from "./Preferiti";
 import Ricette from "./Ricette";
+import Login from "./Login";
 
 import styled from "styled-components";
 
@@ -213,6 +214,12 @@ function App() {
 
                 <Route path={ROTTE.PREFERITI}>
                   <Preferiti />
+                </Route>
+
+                <Route path={ROTTE.LOGIN}>
+                  <Login 
+                    loggatiConGoogle={loggatiConGoogle}
+                  />
                 </Route>
 
                 <Route path={ROTTE.HOME}>

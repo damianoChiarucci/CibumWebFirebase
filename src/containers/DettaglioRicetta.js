@@ -15,6 +15,9 @@ import {
 
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import AddShoppingCart from "@material-ui/icons/AddShoppingCart";
+import RemoveShoppingCart from "@material-ui/icons/RemoveShoppingCart";
+
 
 import { Menu, IconButton } from "@material-ui/core";
 import { Share } from "@material-ui/icons";
@@ -47,6 +50,9 @@ export default function DettaglioRicetta(props) {
             ) : (
               <FavoriteBorderIcon htmlColor={colors.mainRed} />
             )}
+          </IconButton>
+          <IconButton className="shopping btn" onClick={() => contestoUtente.toggleElemInListaSpesa(chiave)}>
+            {contestoUtente.isInListaSpesa(chiave) ? <RemoveShoppingCart htmlColor={colors.mainRed} /> : <AddShoppingCart htmlColor={colors.mainRed} />}
           </IconButton>
           <IconButton
             className="share btn"

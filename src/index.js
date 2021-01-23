@@ -6,6 +6,8 @@ import GlobalStyles from './global-styles';
 // import App2 from './containers/App2';
 
 import reportWebVitals from './reportWebVitals';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 ReactDOM.render(
   <>

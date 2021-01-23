@@ -13,8 +13,8 @@ import CardActions from "@material-ui/core/CardActions";
 import IconButton from  "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import AddShoppingCart from "@material-ui/icons/AddShoppingCart";
-import RemoveShoppingCart from "@material-ui/icons/RemoveShoppingCart";
+import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
+import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 
 import { UtenteContext } from "../containers/App";
 import { colors } from "../global-styles";
@@ -30,18 +30,19 @@ const MiniaturaRicetta = (props) => {
 
   const gestisciPreferito = (evento) => {
     evento.stopPropagation();
-    contestoUtente.togglePreferito(props.chiave);
+    contestoUtente.togglePreferito(props.chiave)
   };
 
-  const gestisciListaSpesa = (evento) => {
-    evento.stopPropagation();
+  const gestisciListaSpesa = (event) => {
+    event.stopPropagation();
     contestoUtente.toggleElemInListaSpesa(props.chiave);
-  };
+  }
 
   return (
     <Contenitore>
       <Card className="card" onClick={() => cambiaRotta(ROTTE.DETTAGLIO_RICETTA + '/' + props.chiave)}>
         <CardHeader
+          className="recipe-preview-header"
           title={props.titolo}
           subheader={props.categoria}
         />
@@ -50,18 +51,13 @@ const MiniaturaRicetta = (props) => {
           image={props.url}
           title={props.titolo}
         />
-        <CardContent>
-          <div>
-            {props.descrizione}
-          </div>
-        </CardContent>
         {contestoUtente?.utente?.loggato && (
           <CardActions disableSpacing>
             <IconButton onClick={(evento) => gestisciPreferito(evento)}>
               {contestoUtente.isPreferito(props.chiave) ? <FavoriteIcon htmlColor={colors.mainRed} /> : <FavoriteBorderIcon htmlColor={colors.mainRed} />}
             </IconButton>
-            <IconButton onClick={(evento) => gestisciListaSpesa(evento)}>
-              {contestoUtente.isInListaSpesa(props.chiave) ? <RemoveShoppingCart htmlColor={colors.mainRed} /> : <AddShoppingCart htmlColor={colors.mainRed} />}
+            <IconButton aria-label="shopping cart" onClick={(evento) => gestisciListaSpesa(evento)}>
+              {contestoUtente.isInListaSpesa(props.chiave) ? <RemoveShoppingCart htmlColor={colors.mainRed}/> : <AddShoppingCart htmlColor={colors.mainRed}/>}
             </IconButton>
           </CardActions>
         )}
@@ -73,11 +69,31 @@ const MiniaturaRicetta = (props) => {
 const Contenitore = styled.div`
   padding: 10px;
   .card {
-    max-width: 350px;
+    margin: 0 auto;
+    cursor: pointer;
+    max-width: 280px;
+    box-shadow: 1px 2px 10px rgba(0,0,0,0.1);
+    .card-actions-wrapper {
+      display: flex;
+      justify-content: center;
+    }
   }
   .card-media {
     height: 0;
     padding-top: 56.25%; // 16:9
+  }
+  .recipe-preview-header {
+    border-bottom: 2px solid ${colors.mainRed};
+    color: ${colors.mainRed};
+    .MuiCardHeader-title {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .MuiCardHeader-subheader {
+      font-size: 12px;
+      text-align: center;
+    }
   }
 `;
 

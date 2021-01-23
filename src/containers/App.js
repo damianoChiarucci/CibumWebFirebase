@@ -61,6 +61,7 @@ function App() {
   const [oggettoRicette, setOggettoRicette] = useState({});
 
   const [preferiti, setPreferiti] = useState({});
+  const [listaSpesa, setListaSpesa] = useState({});
 
   //Questo useEffect scatenerà la funzione che gli è passata solo all'avvio dell'APP
   useEffect(() => {
@@ -92,6 +93,10 @@ function App() {
           if (cloneUtenteDb.preferiti) {
             setPreferiti(cloneUtenteDb.preferiti);
           }
+
+          if (cloneUtenteDb.listaSpesa) {
+            setListaSpesa(cloneUtenteDb.listaSpesa);
+          }
         } else {
           utenteReferenza.set({
             email: utente.email,
@@ -108,6 +113,8 @@ function App() {
     // questo ci permette di non dover verificare prima di invocare questa funzione se dobbiamo aprire o chiudere il menu: lui lo capirà da solo!
     setMenuVisibile(!menuVisibile);
   };
+
+  // GESTIONE PREFERITI
 
   const aggiungiPreferito = (id) => {
     // aggiungo al mio db, nel nodo utenti(utente loggato) il mio nuovo preferito, generando una nuova chiave univoca
@@ -164,6 +171,57 @@ function App() {
     }
   };
 
+  // FINE GESTIONE PREFERITI
+
+  // GESTIONE LISTA DELLA SPESA
+
+  const aggiungiElemInLIstaSpesa = (id) => {
+    const ingredientiArray = oggettoRicette[id]?.recipeIngredient.reduce((accumulatore, valoreCorrente) => {
+      const nuovoIngrediente = { value: valoreCorrente, checked: false};
+      accumulatore.push(nuovoIngrediente);
+      return accumulatore;
+    }, []);
+    if (ingredientiArray) {
+      const listaSpesaRef = firebase.database().ref(`/utenti/${utente.uid}/listaSpesa/${id}`).set(ingredientiArray);
+      const nuovaListaSpesa = {...listaSpesa};
+      nuovaListaSpesa[id] = ingredientiArray;
+      setListaSpesa(nuovaListaSpesa);
+    }
+  };
+
+  const rimuoviElemInListaSpesa = (id) => {
+    const listaSpesaRef = firebase.database().ref(`/utenti/${utente.uid}/listaSpesa/${id}`).remove();
+    const nuovaListaSpesa = {...listaSpesa};
+    delete nuovaListaSpesa[id];
+    setListaSpesa(nuovaListaSpesa);
+  }
+
+  const isInListaSpesa = (id) => {
+    if (listaSpesa[id]) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const toggleElemInListaSpesa = (id) => {
+    if (isInListaSpesa(id)) {
+      return rimuoviElemInListaSpesa(id);
+    } else {
+      return aggiungiElemInLIstaSpesa(id);
+    }
+  };
+
+  const toggleCheckIngredienti = (id, index) => {
+    const isChecked = listaSpesa[id][index]?.checked;
+    const checkedRef = firebase.database().ref(`/utenti/${utente.uid}/listaSpesa/${id}/${index}/checked`).set(!isChecked);
+    const nuovaListaSpesa = {...listaSpesa};
+    nuovaListaSpesa[id][index].checked = !isChecked;
+    setListaSpesa(nuovaListaSpesa);
+  };
+
+  // FINE GESTIONE LISTA DELLA SPESA
+
   if (loading) {
     return (
       <ContenitoreLoading>
@@ -183,6 +241,10 @@ function App() {
           utente,
           togglePreferito,
           isPreferito,
+          isInListaSpesa,
+          toggleElemInListaSpesa,
+          toggleCheckIngredienti,
+          listaSpesa,
         }}
       >
         <Router>

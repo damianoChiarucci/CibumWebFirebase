@@ -8,15 +8,18 @@ import MiniaturaRicettaSlider from '../components/MiniaturaRicettaSlider';
 import { colors, breakpoints } from '../global-styles';
 import bgHome from '../assets/img/bg_home.svg';
 
+import { isMobile } from '../utils/deviceDetector';
+
 const Home = (props) => {
   const ricetteContesto = useContext(RicetteContext);
   
+  const SLIDE_DA_MOSTRARE = isMobile() ? 1 : 3;
   const sliderSettings = {
     dots: false,
     infinte: true,
     speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToShow: SLIDE_DA_MOSTRARE,
+    slidesToScroll: SLIDE_DA_MOSTRARE,
   };
   return (
     <Contenitore>

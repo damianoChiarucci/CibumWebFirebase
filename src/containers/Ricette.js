@@ -10,8 +10,9 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@material-ui/lab/Pagination';
 
 
 import { colors, breakpoints } from "../global-styles";
@@ -21,8 +22,10 @@ import { RicetteContext, UtenteContext } from '../containers/App';
 import { normalizzaRicette, filtra,  isFiltriObjSelected} from '../utils/filtri';
 import { FILTRI } from '../costanti';
 
+const RICETTE_PER_PAGINA = 6;
 
 const Ricette = () => {
+
   const ricetteContesto = useContext(RicetteContext);
   const utenteContest = useContext(UtenteContext);
   const { oggettoRicette } = ricetteContesto;
@@ -38,11 +41,13 @@ const Ricette = () => {
     DURATA: null,
   });
 
+  const [pagina, setPagina] = useState(1);
+
   useEffect(() => {
     const newRicetteNormalizzate = normalizzaRicette(oggettoRicette);
     setRicetteNormalizzateArray(newRicetteNormalizzate);
     setRicetteFiltrate(newRicetteNormalizzate);
-  }, [oggettoRicette]);
+  }, [ricetteContesto]);
 
   useEffect(() => {
     if (barraRicercaInput || isFiltriObjSelected(filtriRicercaInput)) {
@@ -76,6 +81,20 @@ const Ricette = () => {
     }
 
     setFiltriRicercaInput(newFiltriObj);
+  };
+
+  const cambiaPagina = (evento, nuovaPagina) => {
+    window.scrollTo(0, 0);
+    setPagina(nuovaPagina);
+  };
+
+  const ordina = () => {
+
+    const newRicetteFiltrate = [...ricetteFiltrate];
+    newRicetteFiltrate.sort((a, b) => {
+      return a.totalTime - b.totalTime;
+    }).reverse();
+    setRicetteFiltrate(newRicetteFiltrate);
   };
 
 
@@ -133,11 +152,15 @@ const Ricette = () => {
                   ))}
                 </RadioGroup>
               </FormControl>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Ordina per Tempi di cottura</FormLabel>
+                <Button onClick={() => ordina()}>ORDINA</Button>
+              </FormControl>
             </AccordionDetails>
           </Accordion>
         </div>
         <div className="search-results-container">
-          {ricetteFiltrate.map((ricettaNormalizzata) => (
+          {ricetteFiltrate.slice((pagina - 1) * RICETTE_PER_PAGINA, RICETTE_PER_PAGINA * pagina).map((ricettaNormalizzata) => (
             <MiniaturaRicetta
               chiave={ricettaNormalizzata.id}
               key={ricettaNormalizzata.id}
@@ -152,6 +175,14 @@ const Ricette = () => {
           )}
         </div>
       </div>
+      {ricetteFiltrate.length > RICETTE_PER_PAGINA && (
+        <Pagination
+          className="pagination"
+          count={Math.ceil(ricetteFiltrate.length/RICETTE_PER_PAGINA)}
+          page={pagina}
+          onChange={(evento, nuovaPagina) => cambiaPagina(evento, nuovaPagina)}
+        />
+      )}
 
 
     </Contenitore>
